@@ -1,0 +1,25 @@
+# 默认由 Git 判断文本/二进制
+* text=auto
+
+# ★ 启动脚本必须保持 CRLF（且是纯 ASCII）：
+#   这两个文件曾经因为被存成 UTF-8 + LF，导致 cmd 解析到中文 rem 行、
+#   双击后什么都不发生。交给 Git 自动转换会把它们改坏。
+*.bat text eol=crlf
+*.vbs text eol=crlf
+
+# 源码与文档统一 LF
+*.py  text eol=lf
+*.md  text eol=lf
+*.yml text eol=lf
+
+# 二进制：不做任何行尾转换
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.zip binary
+*.exe binary
+*.dll binary
+*.pyd binary

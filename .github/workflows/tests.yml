@@ -1,0 +1,38 @@
+name: tests
+
+# 每次推送到 main、每个 PR 都会跑一遍：72 项测试里包含
+# "不改动用户文件"的快照对比和源码静态审计（AST 扫描），
+# 所以这个绿勾就是对外最好的安全证明。
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  unittest:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.13"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: 安装可选依赖 Pillow（JPG/WebP 预览才会启用）
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pillow
+
+      - name: 显示环境（便于排查）
+        run: |
+          python -c "import sys, tkinter; print(sys.version); print('tk', tkinter.TkVersion)"
+
+      - name: 跑测试（含"不改动用户文件"的静态审计）
+        run: python -B -m unittest discover -s tests -v
